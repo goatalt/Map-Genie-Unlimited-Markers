@@ -4,10 +4,12 @@ Unlimited https://mapgenie.io marked map locations without having to sign up for
 
 This modified javascript file allows you to bypass the Map Genie Pro restriction on marked locations, allowing for more than 100 markers. 
 
-Best of all, it's free for all you poor people :)
+This was created for those who are too poor to pay for Pro. Please consider just paying if you have the means, it's only 10 bucks and less steps than the directions below lol.
 
+https://mapgenie.io/membership
 
-## On google chrome browser (Desktop)
+## Desktop instructions
+### Google Chrome
 
 1. Go to mapgenie.io
 2. Ctrl+Shift+I to open devtools
@@ -22,3 +24,25 @@ Best of all, it's free for all you poor people :)
 11. Ctrl+S
 12. Reload
 13. Enjoy!
+
+### On Firefox (Desktop)
+
+1. IDK lol
+2. Didn't want to bother because I didn't immediately see a way to override. If you really need firefox support this will probably be the first step: https://addons.mozilla.org/en-US/firefox/addon/resourceoverride/
+
+### Edge / Brave / Opera
+
+1. These are all just re-branded chrome, so follow those directions
+
+### Safari
+
+1. You have the money to pay Map Genie
+
+## Mobile instructions
+
+1. No idea
+
+
+## Extra information
+
+I was very bored the night that I made this, I even wrote all this stuff for the README. I don't know what I am doing with my life.
