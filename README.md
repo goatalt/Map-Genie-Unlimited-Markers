@@ -1,6 +1,8 @@
 # Map-Genie-Unlimited-Markers
 mapgenie.io unlimited markers without having to sign up for pro! 
 
+This modified javascript file allows you to bypass the pro restriction on marked locations, allowing for more than 100 markers. And its free for all you poor people :)
+
 
 ## On google chrome browser (Desktop)
 
