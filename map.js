@@ -18,7 +18,29 @@
       }       
       if (window.mapData && window.mapData.maxMarkedLocations) {
         window.mapData.maxMarkedLocations = 100000;
-      }       
+      }   
+      
+
+      if (window.user && window.user.presets) {
+        let presets = JSON.parse(localStorage.getItem('presets'));
+
+          if(presets !== null){
+              window.user.presets = presets;
+            }
+        }
+    }
+
+    function returnStoredPresets(){
+        let presets = JSON.parse(localStorage.getItem('presets'));
+        if (window.user && window.user.presets) {
+    
+              if(presets !== null){
+                  window.user.presets = presets;
+                }
+            }
+
+            return presets || null;
+
     }
 
     function storeData() {
@@ -27,6 +49,13 @@
         localStorage.setItem('locations', JSON.stringify(window.user.locations))
       }      
     }
+
+    function storeDataPresets() {
+        console.log('Storing location data')
+        if (window.user && window.user.presets) {      
+          localStorage.setItem('presets', JSON.stringify(window.user.presets))
+        }      
+      }
 
     setInterval(getStoredData, 100)
     // end 
@@ -1792,7 +1821,27 @@
                                 categories: t
                             };
                             console.log("Saving new preset...", r),
-                            window.axios.post("/api/v1/user/presets", {
+                            
+                            
+
+                            o.props.addPreset({
+                                ...r,
+                                id: user.presets.length + 1,
+                                order: user.presets.length + 1
+                            });
+                            o.setState({
+                                isSavingNewPreset: !1,
+                                isAddingNewPreset: !1
+                            });
+                            user.presets.push({
+                                ...r,
+                                id: user.presets.length + 1,
+                                order: user.presets.length + 1
+                            })
+                            storeDataPresets();
+
+
+                           /*  window.axios.post("/api/v1/user/presets", {
                                 game_id: window.game.id,
                                 title: e,
                                 categories: t,
@@ -1817,7 +1866,8 @@
                                     isSavingNewPreset: !1
                                 })
                             }
-                            ))
+                            )) */
+
                         } else
                             window.toastr.error("Please enter a name for your preset!")
                     }
@@ -1835,7 +1885,10 @@
                     o.editPreset = function(e) {}
                     ,
                     o.deletePreset = function(e) {
-                        window.confirm('Are you sure you want to delete the preset "' + e.title + '"?') && window.axios.delete("/api/v1/user/presets/" + e.id).then((function(t) {
+                        window.confirm('Are you sure you want to delete the preset "' + e.title + '"?') 
+                        && o.props.deletePreset(e.id);
+                        
+                         /* window.axios.delete("/api/v1/user/presets/" + e.id).then((function(t) {
                             o.props.deletePreset(e.id)
                         }
                         )).catch((function(e) {
@@ -1844,7 +1897,7 @@
                             e.response && e.response.data && e.response.data.error && (t = e.response.data.error),
                             window.toastr.error(t, "Error deleting preset")
                         }
-                        ))
+                        )) */
                     }
                     ,
                     o.onSortEnd = function(e) {
@@ -1888,10 +1941,10 @@
                 n.prototype.render = function() {
                     var e = this
                       , t = this.props
-                      , n = t.presets
+                      , n = returnStoredPresets() || t.presets
                       , o = t.activePresets
                       , r = window.user
-                      , i = !(r && r.hasPro) && !window.isEditor;
+                      , i = false;
                     return a.createElement("div", {
                         id: "presets-panel",
                         className: "panel-section " + (i ? "needs-upgrade" : "")
@@ -7428,6 +7481,14 @@
                         return parseInt(e)
                     }
                     ));
+
+                    for (const id in window.user.locations) {
+                        e.push(parseInt(id));
+                    }
+
+                    // Let set unique values, or will be thrown an error
+                    e = [...new Set(e)];
+
                     this.showFoundLocations ? (this.map.setLayoutProperty(A, "icon-size", this.iconSize),
                     re && de && (this.map.setPaintProperty(F, "circle-radius", 6),
                     this.map.setPaintProperty(F, "circle-stroke-width", 1))) : (this.map.setLayoutProperty(A, "icon-size", ["match", ["get", "locationId"], e, 0, this.iconSize]),
@@ -9936,6 +9997,8 @@
                     });
                 case t.DELETE_PRESET:
                     var x = n.meta.presetId;
+                    window.user.presets = window.user.presets.filter(p => p.id !== x);
+                    storeDataPresets();
                     return o(o({}, e), {
                         presets: e.presets.filter((function(e) {
                             return e.id !== x
@@ -20858,7 +20921,7 @@
                 return t = a,
                 r = [{
                     key: "calculateProgress",
-                    value: function(e) {
+                    value: function(e) { 
                         for (var t = e.trackedCategories, n = e.foundLocations, o = e.locationsById, r = {}, i = 0, a = t.length - 1; a >= 0; a--)
                             r[t[a].id] = 0;
                         for (var s in n)
@@ -20867,6 +20930,14 @@
                                 var l = o[s];
                                 l && null != r[l.category_id] && (r[l.category_id] = r[l.category_id] + 1)
                             }
+
+
+                        for(var x in window.user.locations){
+                            if(!n[x]){
+                                i++;
+                            }
+                        }
+                        
                         return {
                             foundLocationCount: i,
                             progress: r
